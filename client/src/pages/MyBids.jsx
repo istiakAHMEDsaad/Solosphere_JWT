@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../providers/AuthProvider';
 import axios from 'axios';
 import BidTableRow from '../components/BidTableRow.jsx';
+import toast from 'react-hot-toast';
 
 const MyBids = () => {
   const { user } = useContext(AuthContext);
@@ -19,7 +20,19 @@ const MyBids = () => {
   };
 
   const handleStatusChange = async (id, prevStatus, status) => {
-    console.table({ id, prevStatus, status });
+    if (prevStatus !== 'In Progress') {
+      return toast.error('Allowed Once! Again not possible');
+    }
+    try {
+      const { data } = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,
+        { status }
+      );
+      fetchAllJobs();
+      console.log(data)
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

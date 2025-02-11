@@ -47,6 +47,7 @@ const BidReqTableRow = ({ bidR, handleStatusChange }) => {
           {/* Accept Button */}
           <button
             onClick={() => handleStatusChange(_id, status, 'In Progress')}
+            disabled={status === 'In Progress' || status === 'Completed'}
             className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'
           >
             <svg
@@ -68,6 +69,7 @@ const BidReqTableRow = ({ bidR, handleStatusChange }) => {
           {/* Reject Button */}
           <button
             onClick={() => handleStatusChange(_id, status, 'Rejected')}
+            disabled={status === 'Rejected' || status === 'Completed'}
             className='disabled:cursor-not-allowed text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none'
           >
             <svg

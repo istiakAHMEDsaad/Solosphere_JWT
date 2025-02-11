@@ -20,7 +20,7 @@ const BidRequests = () => {
   };
 
   const handleStatusChange = async (id, prevStatus, status) => {
-    if (prevStatus == status || prevStatus == 'Completed') {
+    if (prevStatus === status || prevStatus === 'Completed') {
       return toast.error('Allowed Once! Again not possible');
     }
     try {
@@ -29,7 +29,8 @@ const BidRequests = () => {
         { status }
       );
       fetchAllBids();
-      console.log(data)
+      console.log(data);
+      toast.success(`Status Changed to ${status}`)
     } catch (error) {
       console.log(error);
     }
