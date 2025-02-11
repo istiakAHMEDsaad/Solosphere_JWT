@@ -135,11 +135,18 @@ async function run() {
     });
 
 
-    // get all jobs
+    // get all jobs 
     app.get('/all-jobs', async (req, res) => {
-      const filter = req.query.filter
-      let query = {};
-      if(filter){
+      const search = req.query.search;
+      //=> filter method
+      const filter = req.query.filter;
+      let query = {
+        title:{
+          $regex: search,
+          $options: 'i', //case-insensitive
+        }
+      };
+      if (filter) {
         query.category = filter;
       }
       const result = await jobsCollection.find(query).toArray();
