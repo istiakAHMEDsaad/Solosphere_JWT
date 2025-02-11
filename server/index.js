@@ -128,9 +128,21 @@ async function run() {
       // return console.log(status)
       const filter = { _id: new ObjectId(id) };
       const updated = {
-        $set: {status},
+        $set: { status },
       };
       const result = await bidsCollection.updateOne(filter, updated);
+      res.send(result);
+    });
+
+
+    // get all jobs
+    app.get('/all-jobs', async (req, res) => {
+      const filter = req.query.filter
+      let query = {};
+      if(filter){
+        query.category = filter;
+      }
+      const result = await jobsCollection.find(query).toArray();
       res.send(result);
     });
 
