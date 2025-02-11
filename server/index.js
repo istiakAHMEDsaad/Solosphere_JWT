@@ -137,11 +137,24 @@ async function run() {
 
     // get all jobs 
     app.get('/all-jobs', async (req, res) => {
+      //=> search method
       const search = req.query.search;
       //=> filter method
       const filter = req.query.filter;
+      //=> sort method
+      const sort = req.query.sort;
+      let option = {};
+
+      if (sort) {
+        option = {
+          sort: {
+            deadline: sort === 'asc' ? 1 : -1
+          }
+        };
+      }
+
       let query = {
-        title:{
+        title: {
           $regex: search,
           $options: 'i', //case-insensitive
         }
@@ -149,7 +162,7 @@ async function run() {
       if (filter) {
         query.category = filter;
       }
-      const result = await jobsCollection.find(query).toArray();
+      const result = await jobsCollection.find(query, option).toArray();
       res.send(result);
     });
 

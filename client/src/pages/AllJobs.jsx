@@ -7,18 +7,19 @@ const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [filter, setFilter] = useState('');
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('')
 
   useEffect(() => {
     const fetchAllJobs = async () => {
       const { data } = await axios.get(
         `${
           import.meta.env.VITE_API_URL
-        }/all-jobs?filter=${filter}&search=${search}`
+        }/all-jobs?filter=${filter}&search=${search}&sort=${sort}`
       );
       setJobs(data);
     };
     fetchAllJobs();
-  }, [filter, search]);
+  }, [filter, search, sort]);
 
   console.log(filter);
 
@@ -64,6 +65,7 @@ const AllJobs = () => {
             <select
               name='category'
               id='category'
+              onChange={(event)=>setSort(event.target.value)}
               className='border p-4 rounded-md'
             >
               <option value=''>Sort By Deadline</option>
