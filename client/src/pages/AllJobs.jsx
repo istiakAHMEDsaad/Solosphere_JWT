@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import JobCard from '../components/JobCard';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const AllJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -21,7 +22,12 @@ const AllJobs = () => {
     fetchAllJobs();
   }, [filter, search, sort]);
 
-  console.log(filter);
+  const handleResetButton = () => {
+    setFilter('');
+    setSearch('');
+    setSort('');
+    toast.success('Reset')
+  }
 
   return (
     <div className='container px-6 py-10 mx-auto min-h-[calc(100vh-306px)] flex flex-col justify-between'>
@@ -34,6 +40,7 @@ const AllJobs = () => {
               name='category'
               id='category'
               className='border p-4 rounded-lg'
+              value={filter}
               onChange={(event) => setFilter(event.target.value)}
             >
               <option value=''>Filter By Category</option>
@@ -50,6 +57,7 @@ const AllJobs = () => {
               className='px-6 py-2 text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent'
               type='text'
               name='search'
+              value={search}
               onBlur={(event) => setSearch(event.target.value)}
               placeholder='Enter Job Title'
               aria-label='Enter Job Title'
@@ -65,6 +73,7 @@ const AllJobs = () => {
             <select
               name='category'
               id='category'
+              value={sort}
               onChange={(event)=>setSort(event.target.value)}
               className='border p-4 rounded-md'
             >
@@ -74,7 +83,7 @@ const AllJobs = () => {
             </select>
           </div>
 
-          <button className='btn'>Reset</button>
+          <button onClick={handleResetButton} className='btn'>Reset</button>
         </div>
 
         {/* job card mapping */}
