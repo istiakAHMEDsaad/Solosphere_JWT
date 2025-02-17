@@ -15,9 +15,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-/* 
-jogu_dakat@doodle.com
-jogu4321
-megumi_kato@doodle.com
-megumi1234
-*/

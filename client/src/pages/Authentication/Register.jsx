@@ -96,6 +96,7 @@ const Registration = () => {
 
             <span className='w-1/5 border-b dark:border-gray-400 lg:w-1/4'></span>
           </div>
+          
           <form onSubmit={handleSignUp}>
             <div className='mt-4'>
               <label

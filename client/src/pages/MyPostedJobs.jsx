@@ -4,6 +4,7 @@ import { AuthContext } from '../providers/AuthProvider'
 import axios from 'axios'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
+
 const MyPostedJobs = () => {
   const { user } = useContext(AuthContext)
   const [jobs, setJobs] = useState([])

@@ -23,6 +23,7 @@ const MyBids = () => {
     if (prevStatus !== 'In Progress') {
       return toast.error('Allowed Once! Again not possible');
     }
+    
     try {
       const { data } = await axios.patch(
         `${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,

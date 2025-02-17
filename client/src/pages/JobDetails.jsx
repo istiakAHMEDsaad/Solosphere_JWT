@@ -74,9 +74,9 @@ const JobDetails = () => {
       email,
       comment,
       deadline: startDate,
-      jobId,
       title,
       category,
+      jobId,
       status: 'Pending',
       buyer: buyer?.email,
     };
