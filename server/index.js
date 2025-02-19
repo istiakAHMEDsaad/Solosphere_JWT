@@ -49,6 +49,15 @@ async function run() {
         .send({ success: true });
     });
 
+    //clear token from cookies (we can use both get & post)
+    app.get('/logoutWithCookies', async(req, res)=>{
+      res.clearCookie('token', {
+        maxAge: 0,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      }).send({success: true})
+    })
+
     // save a jobData in db
     app.post('/add-job', async (req, res) => {
       const jobData = req.body;

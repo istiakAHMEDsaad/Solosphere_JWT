@@ -70,8 +70,11 @@ const AuthProvider = ({ children }) => {
           }
         );
         console.log(data);
-      }else{
+      } else {
         setUser(currentUser);
+        await axios.get(`${import.meta.env.VITE_API_URL}/logoutWithCookies`, {
+          withCredentials: true,
+        });
       }
       setLoading(false);
     });
