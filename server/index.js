@@ -2,13 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 const port = process.env.PORT || 9000;
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+const corsOptions = {
+  origin: ['http://localhost:5173'],
+  credentials: true,
+  optionalSuccessStatus: 200,
+};
 
+app.use(cors(corsOptions));
+app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@my-mongodb.2rdes.mongodb.net/?retryWrites=true&w=majority&appName=My-MongoDB`;
 
@@ -27,11 +33,26 @@ async function run() {
     const jobsCollection = db.collection('jobs');
     const bidsCollection = db.collection('bids');
 
+    //generate json web token
+    app.post('/jwt', async (req, res) => {
+      const email = req.body;
+      const token = jwt.sign(email, process.env.SECRET_KEY, {
+        expiresIn: '30d',
+      });
+      // console.log(token)
+      res
+        .cookie('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        })
+        .send({ success: true });
+    });
+
     // save a jobData in db
     app.post('/add-job', async (req, res) => {
       const jobData = req.body;
       const result = await jobsCollection.insertOne(jobData);
-      console.log(result);
       res.send(result);
     });
 
@@ -75,7 +96,6 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const result = await jobsCollection.updateOne(query, updated, options);
-      console.log(result);
       res.send(result);
     });
 
@@ -87,11 +107,13 @@ async function run() {
       // check same post duplicate bid
       const query = {
         email: bidData.email,
-        jobId: bidData.jobId
+        jobId: bidData.jobId,
       };
       const alreadyExist = await bidsCollection.findOne(query);
       if (alreadyExist) {
-        return res.status(400).send('You have already placed a bid on this job!');
+        return res
+          .status(400)
+          .send('You have already placed a bid on this job!');
       }
 
       // Save data in bids collection
@@ -99,7 +121,7 @@ async function run() {
       // Increase bids count in db
       const filter = { _id: new ObjectId(bidData.jobId) };
       const update = {
-        $inc: { bid_count: 1 }
+        $inc: { bid_count: 1 },
       };
       const updateBidCount = await jobsCollection.updateOne(filter, update);
 
@@ -125,7 +147,7 @@ async function run() {
     app.patch('/bid-status-update/:id', async (req, res) => {
       const id = req.params.id;
       const { status } = req.body;
-      // return console.log(status)
+
       const filter = { _id: new ObjectId(id) };
       const updated = {
         $set: { status },
@@ -134,8 +156,7 @@ async function run() {
       res.send(result);
     });
 
-
-    // get all jobs 
+    // get all jobs
     app.get('/all-jobs', async (req, res) => {
       //=> search method
       const search = req.query.search;
@@ -148,8 +169,8 @@ async function run() {
       if (sort) {
         option = {
           sort: {
-            deadline: sort === 'asc' ? 1 : -1
-          }
+            deadline: sort === 'asc' ? 1 : -1,
+          },
         };
       }
 
@@ -157,7 +178,7 @@ async function run() {
         title: {
           $regex: search,
           $options: 'i', //case-insensitive
-        }
+        },
       };
       if (filter) {
         query.category = filter;
@@ -187,7 +208,7 @@ async function run() {
 }
 run().catch(console.dir);
 app.get('/', (req, res) => {
-  res.send({ "server": "server is running..." });
+  res.send({ server: 'server is running...' });
 });
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

@@ -37,7 +37,7 @@ const JobDetails = () => {
     _id,
     buyer,
   } = job || {};
-  // console.log(job)
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();

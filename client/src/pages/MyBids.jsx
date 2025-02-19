@@ -25,12 +25,11 @@ const MyBids = () => {
     }
     
     try {
-      const { data } = await axios.patch(
+       await axios.patch(
         `${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,
         { status }
       );
       fetchAllJobs();
-      console.log(data)
     } catch (error) {
       console.log(error);
     }

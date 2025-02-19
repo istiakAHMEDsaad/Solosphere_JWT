@@ -4,6 +4,19 @@ A company is looking for a full-stack web developer capable of creating a simple
 
 Make sure your website design is unique. Visit ThemeForest, Dribble, Google, etc., to get some ideas. You can explore Tailwind component libraries.
 
+* generate key (node):
+```sh
+require('crypto').randomBytes(64).toString('hex')
+```
+* cookies option
+```js
+cookie('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        })
+```
+
 ## Main Requirements
 
 1.  **Visual Appeal:** Focus on making the website visually appealing. Ensure that:

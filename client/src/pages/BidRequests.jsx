@@ -24,12 +24,12 @@ const BidRequests = () => {
       return toast.error('Allowed Once! Again not possible');
     }
     try {
-      const { data } = await axios.patch(
+       await axios.patch(
         `${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,
         { status }
       );
       fetchAllBids();
-      console.log(data);
+
       toast.success(`Status Changed to ${status}`)
     } catch (error) {
       console.log(error);

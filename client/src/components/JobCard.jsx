@@ -12,7 +12,7 @@ const JobCard = ({ job }) => {
     _id,
     bid_count
   } = job || {};
-  // console.log(category);
+
   return (
     <Link
       to={`/job/${_id}`}

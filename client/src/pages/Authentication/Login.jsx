@@ -1,48 +1,48 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import bgImg from '../../assets/images/login.jpg'
-import logo from '../../assets/images/logo.png'
-import { useContext } from 'react'
-import { AuthContext } from '../../providers/AuthProvider'
-import toast from 'react-hot-toast'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import bgImg from '../../assets/images/login.jpg';
+import logo from '../../assets/images/logo.png';
+import { useContext } from 'react';
+import { AuthContext } from '../../providers/AuthProvider';
+import toast from 'react-hot-toast';
 
 
 const Login = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location?.state || '/'
-  console.log(from)
-  const { signIn, signInWithGoogle } = useContext(AuthContext)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state || '/';
+
+  const { signIn, signInWithGoogle } = useContext(AuthContext);
 
   // Google Signin
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithGoogle()
-
-      toast.success('Signin Successful')
-      navigate(from, { replace: true })
+       await signInWithGoogle();
+    
+      toast.success('Signin Successful');
+      navigate(from, { replace: true });
     } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+      console.log(err);
+      toast.error(err?.message);
     }
-  }
+  };
 
   // Email Password Signin
-  const handleSignIn = async e => {
-    e.preventDefault()
-    const form = e.target
-    const email = form.email.value
-    const pass = form.password.value
-    console.log({ email, pass })
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const pass = form.password.value;
+
     try {
       //User Login
-      await signIn(email, pass)
-      toast.success('Signin Successful')
-      navigate(from, { replace: true })
+      await signIn(email, pass);
+      toast.success('Signin Successful');
+      navigate(from, { replace: true });
     } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+      console.log(err);
+      toast.error(err?.message);
     }
-  }
+  };
 
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)] my-12'>
@@ -162,7 +162,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
