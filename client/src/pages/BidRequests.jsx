@@ -3,6 +3,7 @@ import { AuthContext } from '../providers/AuthProvider';
 import axios from 'axios';
 import BidReqTableRow from '../components/BidReqTableRow';
 import toast from 'react-hot-toast';
+import { axioSecure } from '../hooks/useAxiosSecure';
 
 const BidRequests = () => {
   const [bidReq, setBidReq] = useState([]);
@@ -13,9 +14,7 @@ const BidRequests = () => {
   }, [user]);
 
   const fetchAllBids = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/bids/${user?.email}?buyer=true`
-    );
+    const { data } = await axioSecure.get(`/bids/${user?.email}?buyer=true`);
     setBidReq(data);
   };
 
@@ -24,13 +23,13 @@ const BidRequests = () => {
       return toast.error('Allowed Once! Again not possible');
     }
     try {
-       await axios.patch(
+      await axios.patch(
         `${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,
         { status }
       );
       fetchAllBids();
 
-      toast.success(`Status Changed to ${status}`)
+      toast.success(`Status Changed to ${status}`);
     } catch (error) {
       console.log(error);
     }
