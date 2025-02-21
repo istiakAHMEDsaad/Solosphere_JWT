@@ -1,21 +1,20 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../providers/AuthProvider';
-import axios from 'axios';
 import BidTableRow from '../components/BidTableRow.jsx';
 import toast from 'react-hot-toast';
+import useAxiosSecure from '../hooks/useAxiosSecure';
 
 const MyBids = () => {
+  const axioSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
   const [bids, setBids] = useState([]);
 
   useEffect(() => {
     fetchAllJobs();
-  }, [user?.email]);
+  }, [user]);
 
   const fetchAllJobs = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/bids/${user?.email}`
-    );
+    const { data } = await axioSecure.get(`/bids/${user?.email}`);
     setBids(data);
   };
 
@@ -23,12 +22,9 @@ const MyBids = () => {
     if (prevStatus !== 'In Progress') {
       return toast.error('Allowed Once! Again not possible');
     }
-    
+
     try {
-       await axios.patch(
-        `${import.meta.env.VITE_API_URL}/bid-status-update/${id}`,
-        { status }
-      );
+      await axioSecure.patch(`/bid-status-update/${id}`, { status });
       fetchAllJobs();
     } catch (error) {
       console.log(error);
@@ -99,7 +95,11 @@ const MyBids = () => {
 
                 <tbody className='bg-white divide-y divide-gray-200 '>
                   {bids?.map((bid) => (
-                    <BidTableRow key={bid?._id} bid={bid} handleStatusChange={handleStatusChange} />
+                    <BidTableRow
+                      key={bid?._id}
+                      bid={bid}
+                      handleStatusChange={handleStatusChange}
+                    />
                   ))}
                 </tbody>
               </table>

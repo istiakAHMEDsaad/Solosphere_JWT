@@ -104,7 +104,7 @@ async function run() {
     });
 
     // delete a job from db
-    app.delete('/job/:id', async (req, res) => {
+    app.delete('/job/:id', verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await jobsCollection.deleteOne(query);
@@ -162,9 +162,17 @@ async function run() {
     });
 
     //get all bids by a specific user
-    app.get('/bids/:email', async (req, res) => {
+    app.get('/bids/:email', verifyToken, async (req, res) => {
       const isBuyer = req.query.buyer;
       const email = req.params.email;
+
+      const decodedEmail = req.user?.email;
+      if (decodedEmail !== email) {
+        return res.status(401).send({
+          message: 'unauthorized access',
+        });
+      }
+
       //email: email
       let query = {};
       if (isBuyer) {

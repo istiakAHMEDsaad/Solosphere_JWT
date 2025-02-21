@@ -3,9 +3,11 @@ import { AuthContext } from '../providers/AuthProvider';
 import axios from 'axios';
 import BidReqTableRow from '../components/BidReqTableRow';
 import toast from 'react-hot-toast';
-import { axioSecure } from '../hooks/useAxiosSecure';
+import useAxiosSecure from '../hooks/useAxiosSecure';
+
 
 const BidRequests = () => {
+  const axioSecure = useAxiosSecure();
   const [bidReq, setBidReq] = useState([]);
   const { user } = useContext(AuthContext);
 
