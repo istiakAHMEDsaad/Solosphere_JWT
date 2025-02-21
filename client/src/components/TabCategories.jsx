@@ -2,18 +2,39 @@
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import JobCard from './JobCard';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import LoadingSpinner from './LoadingSpinner';
+import toast from 'react-hot-toast';
+// import { useEffect, useState } from 'react';
 
 const TabCategories = () => {
-  const [jobs, setJobs] = useState([]);
+  /* const [jobs, setJobs] = useState([]);
   useEffect(() => {
     fetchAllJobs();
   }, []);
   const fetchAllJobs = async () => {
     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/jobs`);
     setJobs(data);
-  };
+  }; */
+
+  const {
+    data: jobs,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['jobs'],
+    queryFn: async () => {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/jobs`);
+      return data;
+    },
+  });
+  if (isLoading === true) {
+    <LoadingSpinner />;
+  }
+  if (isError === true) {
+    toast.error('Something is wrong');
+  }
 
   return (
     <Tabs>
@@ -40,7 +61,7 @@ const TabCategories = () => {
         <TabPanel>
           <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
             {jobs
-              .filter((job) => job.category === 'Web Development')
+              ?.filter((job) => job.category === 'Web Development')
               .map((job) => (
                 <JobCard key={job._id} job={job} />
               ))}
@@ -51,7 +72,7 @@ const TabCategories = () => {
         <TabPanel>
           <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
             {jobs
-              .filter((job) => job.category === 'Graphics Design')
+              ?.filter((job) => job.category === 'Graphics Design')
               .map((job) => (
                 <JobCard key={job._id} job={job} />
               ))}
@@ -62,7 +83,7 @@ const TabCategories = () => {
         <TabPanel>
           <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
             {jobs
-              .filter((job) => job.category === 'Digital Marketing')
+              ?.filter((job) => job.category === 'Digital Marketing')
               .map((job) => (
                 <JobCard key={job._id} job={job} />
               ))}
@@ -74,3 +95,35 @@ const TabCategories = () => {
 };
 
 export default TabCategories;
+
+/**
+ * tanstack query =>
+ * data
+dataUpdatedAt
+error
+errorUpdateCount
+errorUpdatedAt
+failureCount
+failureReason
+fetchStatus
+isError
+false
+isFetched
+true
+isFetchedAfterMount
+isFetching
+isInitialLoading
+isLoading
+isLoadingError
+isPaused
+isPending
+isPlaceholderData
+isRefetchError
+isRefetching
+isStale
+isSuccess
+promise
+Promise
+refetch
+status
+ */

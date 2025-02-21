@@ -1,16 +1,29 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { AuthContext } from '../providers/AuthProvider';
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import useAxiosSecure from '../hooks/useAxiosSecure';
 
 const AddJob = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
   const [startDate, setStartDate] = useState(new Date());
-  
+
+  const { isLoading, mutateAsync } = {
+    mutationFn: async (jobData) => {
+      await axiosSecure.post(`/add-job`, jobData);
+    },
+    onSuccess: () => {
+      console.log('data saved');
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -37,8 +50,9 @@ const AddJob = () => {
       bid_count: 0,
     };
     try {
-      // 1. make a post request
-      await axios.post(`${import.meta.env.VITE_API_URL}/add-job`, formData);
+      // 1. make a post request using useMutation hook
+      // await axios.post(`${import.meta.env.VITE_API_URL}/add-job`, formData);
+      await mutateAsync(formData);
       // 2. Reset form
       form.reset();
       // 3. Show toast and navigate
@@ -150,15 +164,14 @@ const AddJob = () => {
               id='description'
             ></textarea>
           </div>
-          
+
           {/* Flex */}
           <div className='flex justify-end mt-6'>
             <button className='disabled:cursor-not-allowed px-8 py-2.5 leading-5 text-white transition-colors duration-300 transhtmlForm bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600'>
-              Save
+              {isLoading?'Saving...' : 'Save'}
             </button>
           </div>
         </form>
-
       </section>
     </div>
   );
